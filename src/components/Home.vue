@@ -1,21 +1,138 @@
 <template>
-    <div>
-        Home 组件
-        <el-button type="info" @click="logout">退出</el-button>
-    </div>
+  <!-- <div>
+    Home 组件
+    
+  </div> -->
+  <el-container class="home-container">
+    <el-header>
+      <div>
+        <img src="../assets/logo.png" alt="" class="logo" />
+        <span>后台管理系统</span>
+      </div>
+      <el-button type="info" @click="logout">退出</el-button>
+    </el-header>
+    <el-container>
+      <el-aside :width="isCollapse ? '64px':'200px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <!-- <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true"> -->
+        <el-menu
+          background-color="#333744"
+          text-color="#fff"
+          active-text-color="#409eff"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
+        >
+          <!-- 一级菜单 -->
+          <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
+            <!-- 一级菜单模版 -->
+            <template slot="title">
+              <!-- <i class="el-icon-location"></i> -->
+              <i :class="iconObj[item.id]"></i>
+              <span>{{ item.authName }}</span>
+            </template>
+            <!-- 二级菜单 -->
+            <el-menu-item
+              :index="subItem.id + ''"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+            >
+              <template slot="title">
+                <i class="el-icon-menu"></i>
+                <span>{{ subItem.authName }}</span>
+              </template>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+      <el-container>
+        <el-main>Main</el-main>
+        <el-footer>Footer</el-footer>
+      </el-container>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
 export default {
-    methods:{
-        logout(){
-            sessionStorage.clear();
-            this.$router.push('/login')
-        }
+  data() {
+    return {
+      menuList: [],
+      iconObj: {
+        125: "iconfont icon-user",
+        103: "iconfont icon-tijikongjian",
+        101: "iconfont icon-shangpin",
+        102: "iconfont icon-danju",
+        145: "iconfont icon-baobiao",
+      },
+      isCollapse:false
+    };
+  },
+  methods: {
+    logout() {
+      sessionStorage.clear();
+      this.$router.push("/login");
+    },
+    async getMenuList() {
+      const { data: result } = await this.$http.get("menus");
+      if (result.meta.status !== 200) return this.$message.error(result.meta.msg);
+      this.menuList = result.data;
+      console.log(result);
+    },
+    toggleCollapse(){
+      this.isCollapse = !this.isCollapse
     }
-}
+  },
+  created() {
+    this.getMenuList();
+  },
+};
 </script>
 
 <style lang="less" scoped>
-
+.home-container {
+  height: 100%;
+}
+.el-header {
+  background-color: #373d41;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  > div {
+    display: flex;
+    align-items: center;
+    span {
+      margin: 20px;
+    }
+  }
+}
+.el-aside {
+  background-color: #333744;
+  .el-menu {
+    border-right: none;
+  }
+}
+.el-main {
+  background-color: #eaedf1;
+}
+.el-footer {
+  background-color: #c4c9cf;
+  height: 10%;
+}
+.logo {
+  height: 15%;
+  width: 15%;
+}
+.toggle-button {
+  background-color: #4a5064;
+  font-size: 10;
+  line-height: 24px;
+  color:white;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
 </style>

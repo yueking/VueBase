@@ -65,7 +65,7 @@ export default {
           return;
         }else{
           const {data:result} = await this.$http.post("login",this.loginForm)
-          console.log(result)
+          // console.log(result)
           if(result.meta.status !==200){
             // console.log("登录失败")
             this.$message.error(result.meta.msg)

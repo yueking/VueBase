@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     const token = sessionStorage.getItem('token');
-    console.log('token:', token)
+    // console.log('token:', token)
     if (!token) {
       next('/login')
       // console.log('重定向/login');
