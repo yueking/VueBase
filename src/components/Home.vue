@@ -52,7 +52,13 @@
       </el-aside>
       <el-container>
         <el-main>
-          Main
+          <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+          </el-breadcrumb>
+          <!-- Main -->
           <router-view />
         </el-main>
         <el-footer>Footer</el-footer>
@@ -74,7 +80,7 @@ export default {
         145: "iconfont icon-baobiao",
       },
       isCollapse: false,
-      activePath:''
+      activePath: "",
     };
   },
   methods: {
@@ -99,7 +105,7 @@ export default {
   },
   created() {
     this.getMenuList();
-    this.activePath =sessionStorage.getItem("activePath");
+    this.activePath = sessionStorage.getItem("activePath");
     console.log("router:", this.$router);
   },
 };
@@ -150,5 +156,8 @@ export default {
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
+}
+.breadcrumb{
+  padding-left: -200px;
 }
 </style>
