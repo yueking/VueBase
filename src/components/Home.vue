@@ -23,6 +23,7 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           router
+          :default-active="activePath"
         >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
@@ -37,6 +38,7 @@
               :index="subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
+              @click="saveNavState(subItem.path)"
             >
               <template slot="title">
                 <i class="el-icon-menu"></i>
@@ -72,6 +74,7 @@ export default {
         145: "iconfont icon-baobiao",
       },
       isCollapse: false,
+      activePath:''
     };
   },
   methods: {
@@ -88,9 +91,15 @@ export default {
     toggleCollapse() {
       this.isCollapse = !this.isCollapse;
     },
+    saveNavState(path) {
+      // sessionStorage.removeItem("activePath");
+      sessionStorage.setItem("activePath", path);
+      this.activePath = path;
+    },
   },
   created() {
     this.getMenuList();
+    this.activePath =sessionStorage.getItem("activePath");
     console.log("router:", this.$router);
   },
 };
