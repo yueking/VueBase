@@ -12,7 +12,7 @@
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <el-container>
-      <el-aside :width="isCollapse ? '64px':'200px'">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true"> -->
         <el-menu
@@ -22,6 +22,7 @@
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
+          router
         >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
@@ -33,13 +34,15 @@
             </template>
             <!-- 二级菜单 -->
             <el-menu-item
-              :index="subItem.id + ''"
+              :index="subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
             >
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>{{ subItem.authName }}</span>
+                <!-- <router-link :to="subItem.path"> -->
+                <span> {{ subItem.authName }} </span>
+                <!-- </router-link> -->
               </template>
             </el-menu-item>
           </el-submenu>
@@ -47,7 +50,7 @@
       </el-aside>
       <el-container>
         <el-main>
-           Main
+          Main
           <router-view />
         </el-main>
         <el-footer>Footer</el-footer>
@@ -68,7 +71,7 @@ export default {
         102: "iconfont icon-danju",
         145: "iconfont icon-baobiao",
       },
-      isCollapse:false
+      isCollapse: false,
     };
   },
   methods: {
@@ -82,12 +85,13 @@ export default {
       this.menuList = result.data;
       console.log(result);
     },
-    toggleCollapse(){
-      this.isCollapse = !this.isCollapse
-    }
+    toggleCollapse() {
+      this.isCollapse = !this.isCollapse;
+    },
   },
   created() {
     this.getMenuList();
+    console.log("router:", this.$router);
   },
 };
 </script>
@@ -133,7 +137,7 @@ export default {
   background-color: #4a5064;
   font-size: 10;
   line-height: 24px;
-  color:white;
+  color: white;
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
