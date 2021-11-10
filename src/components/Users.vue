@@ -97,6 +97,7 @@
       </span>
     </el-dialog>
 
+<<<<<<< HEAD
     <el-dialog title="修改用户" :visible.sync="editUserDialogVisible" width="50%">
       <el-form
         :model="editForm"
@@ -121,6 +122,17 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyUser">确 定</el-button>
+=======
+    <el-dialog
+      title="删除"
+      :visible.sync="delUserDialogVisible"
+      width="50%"
+    >
+     <span>确认删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetForm">重 置</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+>>>>>>> users
       </span>
     </el-dialog>
   </div>
