@@ -105,6 +105,18 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="删除"
+      :visible.sync="delUserDialogVisible"
+      width="50%"
+    >
+     <span>确认删除</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetForm">重 置</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
