@@ -97,7 +97,7 @@
       </span>
     </el-dialog>
 
-<<<<<<< HEAD
+
     <el-dialog title="修改用户" :visible.sync="editUserDialogVisible" width="50%">
       <el-form
         :model="editForm"
@@ -122,19 +122,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyUser">确 定</el-button>
-=======
-    <el-dialog
-      title="删除"
-      :visible.sync="delUserDialogVisible"
-      width="50%"
-    >
-     <span>确认删除</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="resetForm">重 置</el-button>
-        <el-button type="primary" @click="addUser">确 定</el-button>
->>>>>>> users
-      </span>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -293,7 +281,24 @@ export default {
         this.editForm = {}
         this.getUserList();
       }
-    }
+    },
+     openDelDialog() {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
   },
   created() {
     this.getUserList();
