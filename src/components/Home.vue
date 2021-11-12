@@ -1,12 +1,8 @@
 <template>
-  <!-- <div>
-    Home 组件
-    
-  </div> -->
   <el-container class="home-container">
     <el-header>
       <div>
-        <img src="../assets/logo.png" alt="" class="logo" />
+        <img src="../assets/logo.png" alt="" class="logo"/>
         <span>后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
@@ -59,7 +55,7 @@
             <el-breadcrumb-item>活动详情</el-breadcrumb-item>
           </el-breadcrumb>
           <!-- Main -->
-          <router-view />
+          <router-view/>
         </el-main>
         <el-footer>Footer</el-footer>
       </el-container>
@@ -69,52 +65,53 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       menuList: [],
       iconObj: {
-        125: "iconfont icon-user",
-        103: "iconfont icon-tijikongjian",
-        101: "iconfont icon-shangpin",
-        102: "iconfont icon-danju",
-        145: "iconfont icon-baobiao",
+        125: 'iconfont icon-user',
+        103: 'iconfont icon-tijikongjian',
+        101: 'iconfont icon-shangpin',
+        102: 'iconfont icon-danju',
+        145: 'iconfont icon-baobiao',
       },
       isCollapse: false,
-      activePath: "",
-    };
+      activePath: '',
+    }
   },
   methods: {
-    logout() {
-      sessionStorage.clear();
-      this.$router.push("/login");
+    logout () {
+      sessionStorage.clear()
+      this.$router.push('/login')
     },
-    async getMenuList() {
-      const { data: result } = await this.$http.get("menus");
-      if (result.meta.status !== 200) return this.$message.error(result.meta.msg);
-      this.menuList = result.data;
-      console.log(result);
+    async getMenuList () {
+      const { data: result } = await this.$http.get('menus')
+      if (result.meta.status !== 200) return this.$message.error(result.meta.msg)
+      this.menuList = result.data
+      // console.log(result);
     },
-    toggleCollapse() {
-      this.isCollapse = !this.isCollapse;
+    toggleCollapse () {
+      this.isCollapse = !this.isCollapse
     },
-    saveNavState(path) {
+    saveNavState (path) {
       // sessionStorage.removeItem("activePath");
-      sessionStorage.setItem("activePath", path);
-      this.activePath = path;
+      sessionStorage.setItem('activePath', path)
+      this.activePath = path
     },
   },
-  created() {
-    this.getMenuList();
-    this.activePath = sessionStorage.getItem("activePath");
-    console.log("router:", this.$router);
+  created () {
+    this.getMenuList()
+    this.activePath = sessionStorage.getItem('activePath')
+    // console.log("router:", this.$router);
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
 .home-container {
   height: 100%;
 }
+
 .el-header {
   background-color: #373d41;
   display: flex;
@@ -123,31 +120,39 @@ export default {
   align-items: center;
   color: white;
   font-size: 20px;
+
   > div {
     display: flex;
     align-items: center;
+
     span {
       margin: 20px;
     }
   }
 }
+
 .el-aside {
   background-color: #333744;
+
   .el-menu {
     border-right: none;
   }
 }
+
 .el-main {
   background-color: #eaedf1;
 }
+
 .el-footer {
   background-color: #c4c9cf;
   height: 10%;
 }
+
 .logo {
   height: 15%;
   width: 15%;
 }
+
 .toggle-button {
   background-color: #4a5064;
   font-size: 10;
@@ -157,7 +162,8 @@ export default {
   letter-spacing: 0.2em;
   cursor: pointer;
 }
-.breadcrumb{
+
+.breadcrumb {
   padding-left: -200px;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="login_container">
     <div class="login_box">
       <div class="avatar_box">
-        <img src="../assets/logo.png" alt="" />
+        <img src="../assets/logo.png" alt=""/>
       </div>
       <el-form
         label-width="0px"
@@ -35,51 +35,69 @@
 
 <script>
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
       loginForm: {
-        username: "admin",
-        password: "123456",
+        username: 'admin',
+        password: '123456',
       },
       // 表单验证对象
       loginFormRules: {
         username: [
-          { required: true, message: "请输入登名称", trigger: "blur" },
-          { min: 3, max: 12, message: "请输入3-12位字符", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入登名称',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 12,
+            message: '请输入3-12位字符',
+            trigger: 'blur'
+          },
         ],
         password: [
-          { required: true, message: "请输入登录密码", trigger: "blur" },
-          { min: 3, max: 12, message: "登录密码3-12位字符", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入登录密码',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 12,
+            message: '登录密码3-12位字符',
+            trigger: 'blur'
+          },
         ],
       },
-    };
+    }
   },
   methods: {
-    resetLoginForm() {
-      this.$refs.loginFormRef.resetFields();
+    resetLoginForm () {
+      this.$refs.loginFormRef.resetFields()
     },
-    login() {
-      this.$refs.loginFormRef.validate(async(valid) => {
-        if(!valid){
-          return;
-        }else{
-          const {data:result} = await this.$http.post("login",this.loginForm)
+    login () {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) {
+          return
+        } else {
+          const { data: result } = await this.$http.post('login', this.loginForm)
           // console.log(result)
-          if(result.meta.status !==200){
+          if (result.meta.status !== 200) {
             // console.log("登录失败")
             this.$message.error(result.meta.msg)
-          }else{
+          } else {
             // console.log("登录成功")
             this.$message.success(result.meta.msg)
-            sessionStorage.setItem("token", result.data.token);
-            this.$router.push('/home');
+            sessionStorage.setItem('token', result.data.token)
+            this.$router.push('/home')
           }
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -87,6 +105,7 @@ export default {
   background-color: darkcyan;
   height: 100%;
 }
+
 .login_box {
   width: 450px;
   height: 300px;
@@ -107,6 +126,7 @@ export default {
     position: absolute;
     left: 50%;
     transform: translate(-50%, -50%);
+
     img {
       width: 100%;
       height: 100%;
@@ -120,6 +140,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+
 .login_form {
   position: absolute;
   bottom: 0;

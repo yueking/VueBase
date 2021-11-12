@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3>Hello</h3>
     <h3>用户列表</h3>
     <el-card class="box-card">
       <el-row :gutter="20">
@@ -46,7 +47,12 @@
               icon="el-icon-edit"
               @click="openEditDialog(scope.row.id)"
             ></el-button>
-            <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="openDelDialog()"
+            ></el-button>
             <el-tooltip
               effect="dark"
               content="设置权限"
@@ -97,7 +103,6 @@
       </span>
     </el-dialog>
 
-
     <el-dialog title="修改用户" :visible.sync="editUserDialogVisible" width="50%">
       <el-form
         :model="editForm"
@@ -122,7 +127,8 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyUser">确 定</el-button>
-
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,12 +163,12 @@ export default {
         email: "",
         mobile: "",
       },
-       editForm: {
+      editForm: {
         username: "",
         password: "",
         email: "",
         mobile: "",
-        id:0
+        id: 0,
       },
       addFormRules: {
         username: [
@@ -225,12 +231,12 @@ export default {
       // console.log("userList:", result);
     },
     handleSizeChange(newSize) {
-      console.log("newSize", newSize);
+      // console.log("newSize", newSize);
       this.queryInfo.pagesize = newSize;
       this.getUserList();
     },
     handleCurrentChange(newPage) {
-      console.log("newPage", newPage);
+      // console.log("newPage", newPage);
       this.queryInfo.pagenum = newPage;
       this.getUserList();
     },
@@ -268,36 +274,42 @@ export default {
       if (result.meta.status !== 200) return;
       this.editUserDialogVisible = true;
       this.editForm = result.data;
-      console.log("getUser:", result);
-      console.log("editForm:", this.editForm);
+      // console.log("getUser:", result);
+      // console.log("editForm:", this.editForm);
     },
-    async modifyUser(){
-      const {data:result} = await this.$http.put('users/'+this.editForm.id,this.editForm)
-      if(result.meta.status !== 200){
-        this.$message.error(result.meta.msg)
-      }else{
-        this.$message.success(result.meta.msg)
+    async modifyUser() {
+      const { data: result } = await this.$http.put(
+        "users/" + this.editForm.id,
+        this.editForm
+      );
+      if (result.meta.status !== 200) {
+        this.$message.error(result.meta.msg);
+      } else {
+        this.$message.success(result.meta.msg);
         this.editUserDialogVisible = false;
-        this.editForm = {}
+        this.editForm = {};
         this.getUserList();
       }
     },
-     openDelDialog() {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
+    openDelDialog() {
+      console.log("confirm");
+      // this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning",
+      // })
+      //   .then(() => {
+      //     this.$message({
+      //       type: "success",
+      //       message: "删除成功!",
+      //     });
+      //   })
+      //   .catch(() => {
+      //     this.$message({
+      //       type: "info",
+      //       message: "已取消删除",
+      //     });
+      //   });
     },
   },
   created() {

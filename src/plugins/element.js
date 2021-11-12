@@ -28,7 +28,7 @@ import {
   Switch,
   Tooltip,
   Pagination,
-  Dialog,
+  Dialog
 } from 'element-ui'
 
 Vue.use(Button)
@@ -55,5 +55,6 @@ Vue.use(Switch)
 Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
-//element ui message 挂载到Vue中
+// element ui message 挂载到Vue中
 Vue.prototype.$message = Message
+// Vue.prototype.$confirm = $confirm
