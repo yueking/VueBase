@@ -21,7 +21,8 @@
         </el-col>
         <el-col :span="4">
           <el-button type="primary" @click="addUserDialogVisible = true"
-            >添加用户</el-button
+          >添加用户
+          </el-button
           >
         </el-col>
       </el-row>
@@ -134,188 +135,246 @@
 
 <script>
 export default {
-  data() {
+  data () {
     // 自定义数据验证规则
     var checkMobile = (rule, value, callback) => {
       // const regMobile = /^(13[0-9]|14[01456879]|15[0-3,5-9]|16[2567]|17[0-8]|18[0-9]|19[0-3,5-9])d{8}$/;
       // const regMobile = /^1(3[0-9]|4[01456879]|5[0-3,5-9]|6[2567]|7[0-8]|8[0-9]|9[0-3,5-9])d{8}$/
-      const regMobile = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+      const regMobile = /^[1][3,4,5,7,8,9][0-9]{9}$/
       if (regMobile.test(value)) {
-        return callback();
+        return callback()
       } else {
-        callback(new Error("输入合法的手机号"));
+        callback(new Error('输入合法的手机号'))
       }
-    };
+    }
 
     return {
       queryInfo: {
-        query: "",
+        query: '',
         pagenum: 1,
-        pagesize: 2,
+        pagesize: 2
       },
       userList: [],
       total: 0,
       addUserDialogVisible: false,
       editUserDialogVisible: false,
       addForm: {
-        username: "",
-        password: "",
-        email: "",
-        mobile: "",
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
       },
       editForm: {
-        username: "",
-        password: "",
-        email: "",
-        mobile: "",
-        id: 0,
+        username: '',
+        password: '',
+        email: '',
+        mobile: '',
+        id: 0
       },
       addFormRules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 15, message: "用户名3-15", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 15,
+            message: '用户名3-15',
+            trigger: 'blur'
+          }
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 3, max: 15, message: "密码3-15", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 15,
+            message: '密码3-15',
+            trigger: 'blur'
+          }
         ],
         email: [
-          { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"],
+            required: true,
+            message: '请输入邮箱地址',
+            trigger: 'blur'
           },
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
         ],
         mobile: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { validator: checkMobile, trigger: "blur" },
-        ],
+          {
+            required: true,
+            message: '请输入手机号',
+            trigger: 'blur'
+          },
+          {
+            validator: checkMobile,
+            trigger: 'blur'
+          }
+        ]
       },
       editFormRules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 15, message: "用户名3-15", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 15,
+            message: '用户名3-15',
+            trigger: 'blur'
+          }
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 3, max: 15, message: "密码3-15", trigger: "blur" },
+          {
+            required: true,
+            message: '请输入密码',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 15,
+            message: '密码3-15',
+            trigger: 'blur'
+          }
         ],
         email: [
-          { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"],
+            required: true,
+            message: '请输入邮箱地址',
+            trigger: 'blur'
           },
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
         ],
         mobile: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { validator: checkMobile, trigger: "blur" },
-        ],
-      },
-    };
+          {
+            required: true,
+            message: '请输入手机号',
+            trigger: 'blur'
+          },
+          {
+            validator: checkMobile,
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
   },
   methods: {
-    async getUserList() {
-      const { data: result } = await this.$http.get("users", {
-        params: this.queryInfo,
-      });
+    async getUserList () {
+      const { data: result } = await this.$http.get('users', {
+        params: this.queryInfo
+      })
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        this.$message.error(result.meta.msg)
       } else {
         // this.$message.success(result.meta.msg);
-        this.userList = result.data.users;
-        this.total = result.data.total;
+        this.userList = result.data.users
+        this.total = result.data.total
       }
       // console.log("userList:", result);
     },
-    handleSizeChange(newSize) {
+    handleSizeChange (newSize) {
       // console.log("newSize", newSize);
-      this.queryInfo.pagesize = newSize;
-      this.getUserList();
+      this.queryInfo.pagesize = newSize
+      this.getUserList()
     },
-    handleCurrentChange(newPage) {
+    handleCurrentChange (newPage) {
       // console.log("newPage", newPage);
-      this.queryInfo.pagenum = newPage;
-      this.getUserList();
+      this.queryInfo.pagenum = newPage
+      this.getUserList()
     },
-    async userStateChange(userInfo) {
+    async userStateChange (userInfo) {
       const { data: result } = await this.$http.put(
         `users/${userInfo.id}/state/${userInfo.mg_state}`
-      );
+      )
       if (result.meta.status !== 200) {
-        userInfo.mg_state = !userInfo.mg_state;
-        return this.$message.error(result.meta.msg);
+        userInfo.mg_state = !userInfo.mg_state
+        return this.$message.error(result.meta.msg)
       } else {
-        this.$message.success(result.meta.msg);
+        this.$message.success(result.meta.msg)
       }
     },
-    //重置表单
-    resetAddForm() {
-      this.$refs.addFormRef.resetFields();
+    // 重置表单
+    resetAddForm () {
+      this.$refs.addFormRef.resetFields()
     },
-    addUser() {
+    addUser () {
       this.$refs.addFormRef.validate(async (valid) => {
-        if (!valid) return;
-        //todo working
-        const { data: result } = await this.$http.post("users", this.addForm);
+        if (!valid) return
+        // todo working
+        const { data: result } = await this.$http.post('users', this.addForm)
         if (result.meta.status !== 201) {
-          this.$message.error(result.meta.msg);
+          this.$message.error(result.meta.msg)
         } else {
-          this.$message.success(result.meta.msg);
-          this.addUserDialogVisible = false;
-          this.getUserList();
+          this.$message.success(result.meta.msg)
+          this.addUserDialogVisible = false
+          this.getUserList()
         }
-      });
+      })
     },
-    async openEditDialog(id) {
-      const { data: result } = await this.$http.get(`users/${id}`);
-      if (result.meta.status !== 200) return;
-      this.editUserDialogVisible = true;
-      this.editForm = result.data;
+    async openEditDialog (id) {
+      const { data: result } = await this.$http.get(`users/${id}`)
+      if (result.meta.status !== 200) return
+      this.editUserDialogVisible = true
+      this.editForm = result.data
       // console.log("getUser:", result);
       // console.log("editForm:", this.editForm);
     },
-    async modifyUser() {
+    async modifyUser () {
       const { data: result } = await this.$http.put(
-        "users/" + this.editForm.id,
+        'users/' + this.editForm.id,
         this.editForm
-      );
+      )
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        this.$message.error(result.meta.msg)
       } else {
-        this.$message.success(result.meta.msg);
-        this.editUserDialogVisible = false;
-        this.editForm = {};
-        this.getUserList();
+        this.$message.success(result.meta.msg)
+        this.editUserDialogVisible = false
+        this.editForm = {}
+        this.getUserList()
       }
     },
-    openDelDialog() {
-      console.log("confirm");
-      // this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning",
-      // })
-      //   .then(() => {
-      //     this.$message({
-      //       type: "success",
-      //       message: "删除成功!",
-      //     });
-      //   })
-      //   .catch(() => {
-      //     this.$message({
-      //       type: "info",
-      //       message: "已取消删除",
-      //     });
-      //   });
-    },
+    openDelDialog () {
+      // console.log('confirm')
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    }
   },
-  created() {
-    this.getUserList();
-  },
-};
+  created () {
+    this.getUserList()
+  }
+}
 </script>
 
 <style lang="less" scoped></style>
