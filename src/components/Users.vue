@@ -298,6 +298,7 @@ export default {
         } else {
           this.$message.success(result.meta.msg)
           this.addUserDialogVisible = false
+          this.addForm = {}
           this.getUserList()
         }
       })
@@ -311,7 +312,7 @@ export default {
       // console.log("editForm:", this.editForm);
     },
     async modifyUser () {
-      this.$refs.editFormRef.validate(async (valid) => {
+      await this.$refs.editFormRef.validate(async (valid) => {
         if (!valid) return
         const { data: result } = await this.$http.put(
           'users/' + this.editForm.id,
@@ -323,7 +324,7 @@ export default {
           this.$message.success(result.meta.msg)
           this.editUserDialogVisible = false
           this.editForm = {}
-          this.getUserList()
+          await this.getUserList()
         }
       })
     },
@@ -333,20 +334,33 @@ export default {
       this.$message.success('删除成功')
       return true
     },
-    openDelDialog (id) {
-      this.$confirm('此操作将永久删除?', '提示', {
+    //   async openDelDialog (id) {
+    //     await this.$confirm('此操作将永久删除?', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       this.deleteUser(id)
+    //       this.getUserList()
+    //     }).catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+    //   }
+    async openDelDialog (id) {
+      const confirmResult = await this.$confirm('此操作将永久删除?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.deleteUser(id)
-        this.getUserList()
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
+      }).catch(error => error)
+      if (confirmResult !== 'confirm') {
+        this.$message.info('取消')
+      } else {
+        await this.deleteUser(id)
+        await this.getUserList()
+      }
     }
   },
   created () {
