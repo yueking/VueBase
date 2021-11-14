@@ -52,7 +52,7 @@
               size="mini"
               type="danger"
               icon="el-icon-delete"
-              @click="openDelDialog()"
+              @click="openDelDialog(scope.row.id)"
             ></el-button>
             <el-tooltip
               effect="dark"
@@ -223,32 +223,6 @@ export default {
         ]
       },
       editFormRules: {
-        username: [
-          {
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          },
-          {
-            min: 3,
-            max: 15,
-            message: '用户名3-15',
-            trigger: 'blur'
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          },
-          {
-            min: 3,
-            max: 15,
-            message: '密码3-15',
-            trigger: 'blur'
-          }
-        ],
         email: [
           {
             required: true,
@@ -337,38 +311,42 @@ export default {
       // console.log("editForm:", this.editForm);
     },
     async modifyUser () {
-      const { data: result } = await this.$http.put(
-        'users/' + this.editForm.id,
-        this.editForm
-      )
-      if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg)
-      } else {
-        this.$message.success(result.meta.msg)
-        this.editUserDialogVisible = false
-        this.editForm = {}
-        this.getUserList()
-      }
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) return
+        const { data: result } = await this.$http.put(
+          'users/' + this.editForm.id,
+          this.editForm
+        )
+        if (result.meta.status !== 200) {
+          this.$message.error(result.meta.msg)
+        } else {
+          this.$message.success(result.meta.msg)
+          this.editUserDialogVisible = false
+          this.editForm = {}
+          this.getUserList()
+        }
+      })
     },
-    openDelDialog () {
-      // console.log('confirm')
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    async deleteUser (id) {
+      const { data: result } = await this.$http.delete(`users/${id}`)
+      if (result.meta.status !== 200) return false
+      this.$message.success('删除成功')
+      return true
+    },
+    openDelDialog (id) {
+      this.$confirm('此操作将永久删除?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
+      }).then(() => {
+        this.deleteUser(id)
+        this.getUserList()
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
     }
   },
   created () {

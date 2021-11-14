@@ -59,4 +59,4 @@ Vue.use(Dialog)
 // Vue.use(MessageBox)
 // element ui message 挂载到Vue中
 Vue.prototype.$message = Message
-Vue.prototype.$confirm = MessageBox
+Vue.prototype.$confirm = MessageBox.confirm
