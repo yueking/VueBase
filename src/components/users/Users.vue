@@ -6,9 +6,9 @@
       <el-row :gutter="20">
         <el-col :span="7">
           <el-input
-            placeholder="请输入内容"
             v-model="queryInfo.query"
             clearable
+            placeholder="请输入内容"
             @clear="getUserList"
             @keydown.enter.native="getUserList"
           >
@@ -43,47 +43,48 @@
         <el-table-column label="操作" width="175px">
           <template slot-scope="scope">
             <el-button
+              icon="el-icon-edit"
               size="mini"
               type="primary"
-              icon="el-icon-edit"
               @click="openEditDialog(scope.row.id)"
             ></el-button>
             <el-button
+              icon="el-icon-delete"
               size="mini"
               type="danger"
-              icon="el-icon-delete"
               @click="openDelDialog(scope.row.id)"
             ></el-button>
             <el-tooltip
-              effect="dark"
-              content="设置权限"
-              placement="top"
               :enterable="false"
+              content="设置权限"
+              effect="dark"
+              placement="top"
             >
-              <el-button size="mini" type="warning" icon="el-icon-setting"></el-button>
+              <el-button icon="el-icon-setting" size="mini" type="warning"
+                         @click="openPermissionDialog(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
+        :current-page="queryInfo.pagenum"
+        :page-size="queryInfo.pagesize"
+        :page-sizes="[1, 2, 5, 10]"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryInfo.pagenum"
-        :page-sizes="[1, 2, 5, 10]"
-        :page-size="queryInfo.pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
       >
       </el-pagination>
     </el-card>
 
-    <el-dialog title="添加用户" :visible.sync="addUserDialogVisible" width="50%">
+    <el-dialog :visible.sync="addUserDialogVisible" title="添加用户" width="50%">
       <el-form
+        ref="addFormRef"
         :model="addForm"
         :rules="addFormRules"
-        ref="addFormRef"
-        label-width="100px"
         class="demo-ruleForm"
+        label-width="100px"
       >
         <el-form-item label="用户名称" prop="username">
           <el-input v-model="addForm.username"></el-input>
@@ -104,13 +105,13 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="修改用户" :visible.sync="editUserDialogVisible" width="50%">
+    <el-dialog :visible.sync="editUserDialogVisible" title="修改用户" width="50%">
       <el-form
+        ref="editFormRef"
         :model="editForm"
         :rules="editFormRules"
-        ref="editFormRef"
-        label-width="100px"
         class="demo-ruleForm"
+        label-width="100px"
       >
         <el-form-item label="用户名称" prop="username">
           <el-input v-model="editForm.username" :disabled="true"></el-input>
@@ -128,6 +129,36 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="modifyUser">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog :visible.sync="permissionDialogVisible" title="分配权限" width="50%" @close="closePermissionDialog">
+      <el-form
+        ref="permissionForm"
+        :model="userInfo"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="用户名称:" prop="username">
+          {{ userInfo.username }}
+        </el-form-item>
+        <el-form-item label="当前角色:" prop="role_name">
+          {{ userInfo.role_name }}
+        </el-form-item>
+        <el-form-item label="选择角色:" prop="option">
+          <el-select v-model="selectRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in roles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="permissionDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateUserRole">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -154,10 +185,13 @@ export default {
         pagenum: 1,
         pagesize: 2
       },
+      selectRoleId: '',
+      roles: [],
       userList: [],
       total: 0,
       addUserDialogVisible: false,
       editUserDialogVisible: false,
+      permissionDialogVisible: false,
       addForm: {
         username: '',
         password: '',
@@ -170,6 +204,11 @@ export default {
         email: '',
         mobile: '',
         id: 0
+      },
+      userInfo: {
+        username: '',
+        id: 0,
+        role_name: ''
       },
       addFormRules: {
         username: [
@@ -250,6 +289,14 @@ export default {
     }
   },
   methods: {
+    async getRoles () {
+      const { data: result } = await this.$http.get('roles')
+      if (result.meta.status !== 200) {
+        this.$message.error(result.meta.msg)
+      } else {
+        this.roles = result.data
+      }
+    },
     async getUserList () {
       const { data: result } = await this.$http.get('users', {
         params: this.queryInfo
@@ -308,8 +355,6 @@ export default {
       if (result.meta.status !== 200) return
       this.editUserDialogVisible = true
       this.editForm = result.data
-      // console.log("getUser:", result);
-      // console.log("editForm:", this.editForm);
     },
     async modifyUser () {
       await this.$refs.editFormRef.validate(async (valid) => {
@@ -361,10 +406,36 @@ export default {
         await this.deleteUser(id)
         await this.getUserList()
       }
+    },
+    openPermissionDialog (user) {
+      this.getRoles()
+      this.userInfo = user
+      this.permissionDialogVisible = true
+    },
+    closePermissionDialog () {
+      this.selectRoleId = ''
+      this.userInfo = {}
+      this.permissionDialogVisible = false
+    },
+    async updateUserRole () {
+      if (!this.selectRoleId) {
+        this.$message.error('请选择用户角色')
+      } else {
+        const { data: result } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectRoleId })
+        if (result.meta.status !== 200) {
+          this.$message.error(result.meta.msg)
+        } else {
+          this.$message.success(result.meta.msg)
+          await this.getUserList()
+          // console.log('updateRole:', result)
+          this.closePermissionDialog()
+        }
+      }
     }
   },
   created () {
     this.getUserList()
+    this.getRoles()
   }
 }
 </script>

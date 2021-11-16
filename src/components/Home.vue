@@ -76,7 +76,7 @@ export default {
         145: 'iconfont icon-baobiao',
       },
       isCollapse: false,
-      activePath: '',
+      activePath: ''
     }
   },
   methods: {
@@ -88,7 +88,7 @@ export default {
       const { data: result } = await this.$http.get('menus')
       if (result.meta.status !== 200) return this.$message.error(result.meta.msg)
       this.menuList = result.data
-      // console.log(result);
+      // console.log('menuList:', this.menuList)
     },
     toggleCollapse () {
       this.isCollapse = !this.isCollapse
@@ -97,13 +97,13 @@ export default {
       // sessionStorage.removeItem("activePath");
       sessionStorage.setItem('activePath', path)
       this.activePath = path
-    },
+    }
   },
   created () {
     this.getMenuList()
     this.activePath = sessionStorage.getItem('activePath')
     // console.log("router:", this.$router);
-  },
+  }
 }
 </script>
 

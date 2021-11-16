@@ -40,7 +40,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '123456',
+        password: '123456'
       },
       // 表单验证对象
       loginFormRules: {
@@ -55,7 +55,7 @@ export default {
             max: 12,
             message: '请输入3-12位字符',
             trigger: 'blur'
-          },
+          }
         ],
         password: [
           {
@@ -68,9 +68,9 @@ export default {
             max: 12,
             message: '登录密码3-12位字符',
             trigger: 'blur'
-          },
-        ],
-      },
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -80,7 +80,7 @@ export default {
     login () {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) {
-          return
+
         } else {
           const { data: result } = await this.$http.post('login', this.loginForm)
           // console.log(result)
@@ -95,8 +95,8 @@ export default {
           }
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

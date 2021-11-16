@@ -7,10 +7,10 @@ import Categories from '../components/Categories.vue'
 import Params from '../components/Params.vue'
 import Reports from '../components/Reports.vue'
 import Orders from '../components/Orders.vue'
-import Rights from '../components/Rights.vue'
+import Rights from '../components/authority/Permissions.vue'
 import Goods from '../components/Goods.vue'
-import Roles from '../components/Roles.vue'
-import Users from '../components/Users.vue'
+import Roles from '../components/authority/Roles.vue'
+import Users from '../components/users/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -39,42 +39,42 @@ const router = new VueRouter({
         },
         {
           path: 'categories',
-          component: Categories,
+          component: Categories
         },
         {
           path: 'params',
-          component: Params,
+          component: Params
         },
         {
           path: 'reports',
-          component: Reports,
+          component: Reports
         },
         {
           path: 'orders',
-          component: Orders,
+          component: Orders
         },
         {
           path: 'rights',
-          component: Rights,
+          component: Rights
         },
         {
           path: 'goods',
-          component: Goods,
+          component: Goods
         },
         {
           path: 'roles',
-          component: Roles,
+          component: Roles
         },
         {
           path: 'users',
-          component: Users,
-        },
-      ],
-    },
-  ],
+          component: Users
+        }
+      ]
+    }
+  ]
 })
 
-//全局  前置路由守护  用于验证权限
+// 全局  前置路由守护  用于验证权限
 router.beforeEach((to, from, next) => {
   //     //判断逻辑 可以用于权限验证
   if (to.path === '/login') {
