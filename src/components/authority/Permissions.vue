@@ -6,7 +6,7 @@
     <el-card class="box-card">
       <el-table :data="rights" border stripe>
         <el-table-column type="index"></el-table-column>
-<!--        <el-table-column label="id" prop="id"></el-table-column>-->
+        <!--        <el-table-column label="id" prop="id"></el-table-column>-->
         <el-table-column label="名称" prop="authName"></el-table-column>
         <el-table-column label="路径" prop="path"></el-table-column>
         <el-table-column label="level" prop="level">
@@ -16,7 +16,7 @@
             <el-tag v-else type="warning">三级</el-tag>
           </template>
         </el-table-column>
-<!--        <el-table-column label="pid" prop="pid"></el-table-column>-->
+        <!--        <el-table-column label="pid" prop="pid"></el-table-column>-->
       </el-table>
     </el-card>
   </div>

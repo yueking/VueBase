@@ -6,7 +6,7 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary">添加角色</el-button>
+          <el-button type="primary" @click="addRoleDialogVisible = true">添加角色</el-button>
         </el-col>
       </el-row>
       <el-table :data="roles" border stripe>
@@ -28,7 +28,8 @@
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span="22">
-                    <el-tag  v-for="sub2 in sub.children" :key="sub2.id" closable type="warning" @close="removePermissionById(scope.row,sub2.id)">{{
+                    <el-tag v-for="sub2 in sub.children" :key="sub2.id" closable type="warning"
+                            @close="removePermissionById(scope.row,sub2.id)">{{
                         sub2.authName
                       }}
                     </el-tag>
@@ -43,8 +44,10 @@
         <el-table-column label="角色说明" prop="roleDesc"></el-table-column>
         <el-table-column label="操作" width="300px">
           <template scope="scope">
-            <el-button icon="el-icon-edit" size="mini" type="primary">编辑</el-button>
-            <el-button icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+            <el-button icon="el-icon-edit" size="mini" type="primary" @click="openEditRoleDialog(scope.row)">编辑
+            </el-button>
+            <el-button icon="el-icon-delete" size="mini" type="danger" @click="openDeleteDialog(scope.row.id)">删除
+            </el-button>
             <el-tooltip
               :enterable="false"
               content="分配权限"
@@ -59,7 +62,49 @@
       </el-table>
     </el-card>
 
-    <el-dialog :visible.sync="permissionDialogShow" title="分配权限" width="50%" @close="permissionDialogClose">
+    <el-dialog :visible.sync="addRoleDialogVisible" title="添加角色" width="50%">
+      <el-form
+        ref="addRoleFormRef"
+        :model="roleForm"
+        :rules="roleFormRules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="roleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色说明" prop="roleDesc">
+          <el-input v-model="roleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetRoleForm">重 置</el-button>
+        <el-button type="primary" @click="addRole">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog :visible.sync="editRoleDialogVisible" title="修改角色" width="50%" @close="roleDialogClose">
+      <el-form
+        ref="editRoleFormRef"
+        :model="roleForm"
+        :rules="roleFormRules"
+        class="demo-ruleForm"
+        label-width="100px"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="roleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色说明" prop="roleDesc">
+          <el-input v-model="roleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span>{{ roleForm }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateRole">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :visible.sync="permissionDialogVisible" title="分配权限" width="50%" @close="permissionDialogClose">
       <el-tree ref="permissionTreeRef" :data="permissions" :default-checked-keys="currentTreeNodeKeys"
                :default-expanded-keys="currentTreeNodeKeys"
                :props="treeProps"
@@ -67,7 +112,7 @@
                show-checkbox
                @node-click="handleNodeClick"></el-tree>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="permissionDialogShow = false">取 消</el-button>
+        <el-button @click="permissionDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitPermissions">确 定</el-button>
       </span>
     </el-dialog>
@@ -79,12 +124,33 @@ export default {
     return {
       roles: [],
       permissions: [],
-      permissionDialogShow: false,
+      permissionDialogVisible: false,
+      addRoleDialogVisible: false,
+      editRoleDialogVisible: false,
       currentTreeNodeKeys: [],
-      currentRoleId: '',
+      currentRoleId: 0,
       treeProps: {
         label: 'authName',
         children: 'children'
+      },
+      roleForm: {
+        id: 0,
+        roleName: '',
+        roleDesc: ''
+      },
+      roleFormRules: {
+        roleName: [
+          {
+            required: true,
+            message: '请输入角色名',
+            trigger: 'blur'
+          },
+          {
+            min: 3,
+            max: 15,
+            message: '角色名:3-15位',
+            trigger: 'blur'
+          }]
       }
     }
   },
@@ -135,9 +201,6 @@ export default {
         // await this.getRoles()
       }
     },
-    handleCheckChange (data, checked, indeterminate) {
-      console.log(data, checked, indeterminate)
-    },
     handleNodeClick (data) {
       console.log(data)
     },
@@ -146,7 +209,7 @@ export default {
       // console.log('role:', role)
       this.getPermisssionTree()
       this.currentRoleId = role.id
-      this.permissionDialogShow = true
+      this.permissionDialogVisible = true
     },
     getLeafKeys (node, arr) {
       // node 节点不包含children 属性
@@ -157,7 +220,7 @@ export default {
     },
     permissionDialogClose () {
       this.currentTreeNodeKeys = []
-      this.currentRoleId = ''
+      this.currentRoleId = 0
     },
     async submitPermissions () {
       // const arr1 = this.$refs.permissionTreeRef.getCheckedKeys()
@@ -174,9 +237,61 @@ export default {
       } else {
         this.$message.success(result.meta.msg)
         this.getRoles()
-        this.permissionDialogShow = false
+        this.permissionDialogVisible = false
       }
       // console.log(allPermissions)
+    },
+    async deleteRole (roleId) {
+      const { data: result } = await this.$http.delete('roles/' + roleId)
+      if (result.meta.status !== 200) {
+        return this.$message.error(result.meta.msg)
+      } else {
+        this.$message.success(result.meta.msg)
+      }
+    },
+    async openDeleteDialog (roleId) {
+      const confirmResult = await this.$confirm('此操作将永久删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(error => error)
+      if (confirmResult !== 'confirm') {
+        this.$message.info('取消')
+      } else {
+        await this.deleteRole(roleId)
+        await this.getRoles()
+      }
+    },
+    resetRoleForm () {
+      this.roleForm = {}
+    },
+    async addRole () {
+      const { data: result } = await this.$http.post('roles', this.roleForm)
+      if (result.meta.status !== 201) {
+        return this.$message.error(result.meta.msg)
+      } else {
+        this.$message.success(result.meta.msg)
+        this.roleForm = {}
+        await this.getRoles()
+        this.addRoleDialogVisible = false
+      }
+    },
+    openEditRoleDialog (roleInfo) {
+      this.roleForm = JSON.parse(JSON.stringify(roleInfo))
+      this.editRoleDialogVisible = true
+    },
+    roleDialogClose () {
+      this.roleForm = {}
+    },
+    async updateRole () {
+      const { data: result } = await this.$http.put(`roles/${this.roleForm.id}`, this.roleForm)
+      if (result.meta.status !== 200) {
+        return this.$message.error(result.meta.msg)
+      } else {
+        this.$message.success(result.meta.msg)
+        await this.getRoles()
+        this.editRoleDialogVisible = false
+      }
     }
   },
   created () {
