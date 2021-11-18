@@ -1962,3 +1962,18 @@ brew install GraphicsMagick
           ]
         }
   ```
+### git
+git branch
+git checkout 切换的名称
+git branch  创建新分支名称
+git checkout -b 新分支名称  //创建新分支 并切换到新分支
+git push -u origin  新分支名称  //为原程仓库 创建新分支
+git merage 分支名称 //合并分支内容
+
+todo list
+table 
+    pagination
+    handleSizeChange
+    handleCurrentChange
+    组件进一步封装
+home 组件进一步拆分    
