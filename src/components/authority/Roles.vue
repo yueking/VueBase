@@ -98,7 +98,6 @@
           <el-input v-model="roleForm.roleDesc"></el-input>
         </el-form-item>
       </el-form>
-      <span>{{ roleForm }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editRoleDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="updateRole">确 定</el-button>

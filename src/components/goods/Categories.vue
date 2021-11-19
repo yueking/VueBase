@@ -30,9 +30,10 @@
           <el-tag v-else size="mini" type="warning">三级</el-tag>
         </template>
 
-        <template slot="caoZuo" slot-scope="scope">
+        <template slot="operate" slot-scope="scope">
           <el-button icon="el-icon-edit" size="mini" type="primary" @click="openEditDialog(scope.row)">编辑</el-button>
-          <el-button icon="el-icon-delete" size="mini" type="danger">删除</el-button>
+          <el-button icon="el-icon-delete" size="mini" type="danger" @click="submitDelete(scope.row.cat_id)">删除
+          </el-button>
         </template>
       </tree-table>
 
@@ -89,7 +90,15 @@
           <el-input v-model="editForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="所属分类" prop="cat_pid">
-          <el-input v-model="editForm.cat_pid"></el-input>
+          <el-cascader
+            ref="cascaderHandleRef"
+            v-model="selectedKeys"
+            :options="parentCategories"
+            :props="cascaderCateProps"
+            change-on-select
+            clearable
+            expand-trigger="hover"
+            @change="handleCascaderChange"></el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -138,7 +147,7 @@ export default {
           align: 'center',
           headerAlign: 'center',
           type: 'template',
-          template: 'caoZuo'
+          template: 'operate'
         }
       ],
       categories: [],
@@ -248,15 +257,43 @@ export default {
     },
     openEditDialog (cateInfo) {
       this.editDialogVisible = true
+      this.getParentCategories()
       this.editForm = JSON.parse(JSON.stringify(cateInfo))
+      this.selectedKeys = [this.editForm.cat_pid]
     },
     closeEditDialog () {
       this.editDialogVisible = false
       this.editForm = {}
     },
-    submitEditForm () {
+    async submitEditForm () {
+      const { data: result } = await this.$http.put(`categories/${this.editForm.cat_id}`, this.editForm)
+      if (result.meta.status !== 200) {
+        this.$message.error(result.meta.msg)
+      } else {
+        this.$message.success(result.meta.msg)
+        this.editDialogVisible = false
+        this.getCategories()
+      }
+    },
+    async deleteCate (id) {
+      const { data: result } = await this.$http.delete(`categories/${id}`)
+      if (result.meta.status !== 200) return false
+      this.$message.success('删除成功')
+      return true
+    },
+    async submitDelete (id) {
+      const confirmResult = await this.$confirm('此操作将永久删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(error => error)
+      if (confirmResult !== 'confirm') {
+        this.$message.info('取消')
+      } else {
+        await this.deleteCate(id)
+        await this.getCategories()
+      }
     }
-
   },
   created () {
     this.getCategories()
